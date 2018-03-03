@@ -5,23 +5,22 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import java.lang.Exception;
 
-public class WebCrawler {
-    public static int counter=0;
+public class WebCrawler extends Thread{
+    public static int pages_counter=0;
     public LinkedList<String> q = new LinkedList<String>();
     public HashMap<String,Boolean> visited=new HashMap<String,Boolean>();
 
-    public void DownloadPage(String url) throws Exception
+    public  void DownloadPage(String url)
     {
-        System.out.println(counter);
+        System.out.println(pages_counter);
         try {
             Document doc=Jsoup.connect(url).get();
             org.jsoup.select.Elements links =doc.select("a");
-            BufferedWriter writer = new BufferedWriter(new FileWriter("pages/"+counter+".html"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("pages/"+(pages_counter++)+".html"));
             writer.write(doc.outerHtml());
             writer.close();
             for(Element e :links) {
                 q.add(e.attr("abs:href"));
-
             }
         }
         catch (IOException ioe) {
@@ -29,27 +28,34 @@ public class WebCrawler {
         }
 
     }
-    public void Crawler() throws Exception {
+    public void run(){
         String first_url="https://jsoup.org";
-
         q.add(first_url);
         this.DownloadPage(first_url);
         visited.put(first_url,true);
-        counter++;
+
+        pages_counter++;
         while (q.size()!=0)
         {
             String url=q.poll();
+            System.out.println(url);
             if (!visited.containsKey(url)) {
-                System.out.println(url);
                 this.DownloadPage(url);
-                counter++;
                 visited.put(url, true);
             }
-            if (counter>=100)
+            if (pages_counter>=100)
                 break;
         }
 
+
     }
 
+    public void Crawler() throws Exception {
+        (new WebCrawler()).start();
+        (new WebCrawler()).start();
+        (new WebCrawler()).start();
+        (new WebCrawler()).start();
+        (new WebCrawler()).start();
 
+    }
 }
