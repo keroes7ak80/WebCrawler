@@ -1,4 +1,3 @@
-import java.net.*;
 import java.io.*;
 import org.jsoup.*;
 import org.jsoup.nodes.Document;
