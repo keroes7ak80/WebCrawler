@@ -1,0 +1,5 @@
+https://github.com
+https://chrome.google.com
+https://mozilla.org
+https://jsoup.org
+https://twitter.com
