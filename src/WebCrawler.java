@@ -80,15 +80,12 @@ public class WebCrawler  extends Thread  {
             try {
                 Document doc = Jsoup.connect(url).get();
                 org.jsoup.select.Elements links = doc.select("a");
-                synchronized ((Integer)pages_counter) {
                     BufferedWriter writer = new BufferedWriter(new FileWriter("pages/" + (pages_counter++) + ".html"));
-
                     writer.write(doc.outerHtml());
                     writer.close();
                     PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("index.txt", true)));
                     out.append(pages_counter + " " + url + "\n");
                     out.close();
-                }
                 BasicDBObject obj = new BasicDBObject();
                 obj.put("url",url);
                 visited_table.insert(obj);
@@ -114,7 +111,6 @@ public class WebCrawler  extends Thread  {
                 String url;
                 synchronized (q) {
                     url = q.poll();
-
                     if (!visited.containsKey(url)) {
                         this.DownloadPage(url);
                     }
@@ -130,7 +126,7 @@ public class WebCrawler  extends Thread  {
                     }
         }
         catch (Exception e){
-//            System.out.println(e);
+            System.out.println(e);
         }
 
     }
@@ -140,7 +136,7 @@ public class WebCrawler  extends Thread  {
         String domainName=getDomainName(url);
         List<String> Disallowed=new ArrayList<String>();
         List<String> Allowed=new ArrayList<String>();
-        if(disallowed.containsKey(domainName))
+        if(disallowed.containsKey(domainName)||allowed.containsKey(domainName))
         {
             return;
         }
