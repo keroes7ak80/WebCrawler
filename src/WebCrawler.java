@@ -128,7 +128,9 @@ public class WebCrawler extends Thread {
                     for (Thread thread : threads) {
                         thread.interrupt();
                     }
+                    visited_table.drop();
                     break;
+
                 }
 
                 String url;

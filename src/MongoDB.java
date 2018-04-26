@@ -42,7 +42,7 @@ public class MongoDB {
 		addUrl(c);
 	}*/
 	public void buildIndexes() {// ok
-		DBObject criteria1 = new BasicDBObject("word",1);
+		DBObject criteria1 = new BasicDBObject("stem",1);
 		byWord.createIndex(criteria1);
 
 		DBObject criteria2 = new BasicDBObject("url",1);
