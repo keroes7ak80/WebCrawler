@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+ <head> 
+  <title>Try jsoup online: Java HTML parser and CSS debugger</title> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
+  <style type="text/css">
+        body {
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+    </style> 
+  <link rel="stylesheet" media="screen" href="/rez/try.css" /> 
+  <link rel="preload" href="/rez/exec_4.js" as="script" /> 
+ </head> 
+ <body> 
+  <div class="navbar navbar-inverse navbar-fixed-top"> 
+   <div class="navbar-inner"> 
+    <div class="container-fluid"> 
+     <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button> 
+     <a class="brand" href="/">Try jsoup</a> 
+     <div class="nav-collapse collapse"> 
+      <ul class="nav"> 
+       <li><a href="//jsoup.org/">About jsoup</a></li> 
+       <li><a href="//jsoup.org/download">Download</a></li> 
+       <li><a href="//jsoup.org/apidocs/">API Reference</a></li> 
+      </ul> 
+      <form class="navbar-form pull-right"> 
+       <!-- Button to trigger modal --> 
+       <a id="stateSaveButton" href="#dialogSaveState" role="button" class="btn" data-toggle="modal"><i class="icon-pencil"></i> Save</a> 
+      </form> 
+     </div> 
+     <!--/.nav-collapse --> 
+    </div> 
+   </div> 
+  </div> 
+  <div class="container-fluid"> 
+   <div class="row-fluid"> 
+    <div class="span2"> 
+     <div id="lhs"> 
+      <div> 
+       <div> 
+        <div> 
+         <b>Try jsoup</b> is an interactive demo for 
+         <a href="//jsoup.org/">jsoup</a> that allows you to see how it parses HTML into a DOM, and test CSS selector queries. 
+        </div> 
+       </div> 
+      </div> 
+      <div> 
+       <div> 
+        <h4>Settings</h4> 
+       </div> 
+       <div> 
+        <div> 
+         <form id="settingsForm"> 
+          <b>Parser:</b> 
+          <label class="radio"> <input type="radio" name="parser" value="html" checked="" />HTML </label> 
+          <label class="radio"> <input type="radio" name="parser" value="xml" />XML </label> 
+          <br /> 
+          <label class="checkbox"> <input type="checkbox" value="on" name="pretty" checked="" /> Pretty print </label> 
+          <label class="checkbox"> <input type="checkbox" value="on" name="ascii" /> ascii </label> 
+          <label class="checkbox"> <input type="checkbox" value="on" name="preserve" /> Preserve case </label> 
+          <br /> 
+          <b>Cleaner</b> 
+          <select name="whitelist" id="selectWhitelist"> <option value="disabled" selected="selected">Not enabled</option> <option value="none">None (text only)</option> <option value="simpleText">Simple in-line formatting HTML</option> <option value="basic">Basic HTML</option> <option value="basicWithImages">Basic HTML with images</option> <option value="relaxed">Relaxed, structural HTML</option> </select> 
+         </form> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+    </div> 
+    <!--/span--> 
+    <div class="span10"> 
+     <div class="row-fluid"> 
+      <div class="span5" id="htmlInputContainer"> 
+       <h4>Input HTML</h4> 
+       <form action="/parse" method="POST" id="inputForm"> 
+        <textarea name="html" id="htmlInput" class="input-block-level" rows="12">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Try jsoup&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;This is &lt;a href=&quot;http://jsoup.org/&quot;&gt;jsoup&lt;/a&gt;.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</textarea> 
+       </form> 
+       <!-- Button to trigger modal --> 
+       <a id="dialogFetchButton" href="#dialogFetch" role="button" class="btn btn-small" data-toggle="modal"><i class="icon-download"></i> Fetch URL</a> 
+       <!-- Modal --> 
+       <div id="dialogFetch" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"> 
+        <div class="modal-header"> 
+         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> 
+         <h3 id="myModalLabel">Fetch HTML from URL</h3> 
+        </div> 
+        <form id="dialogFetchForm"> 
+         <div class="modal-body"> 
+          <div class="input-prepend"> 
+           <span class="add-on" id="labelUrl">URL</span> 
+           <input type="text" name="url" id="fetchUrl" class="input-xlarge" /> 
+           <span id="fetchWait"></span> 
+          </div> 
+          <div class="input-prepend"> 
+           <span class="add-on" id="labelUa">User Agent</span> 
+           <input type="text" name="ua" id="fetchUa" class="input-xlarge" /> 
+          </div> 
+          <div id="dialogFetchError"></div> 
+         </div> 
+         <div class="modal-footer"> 
+          <button class="btn btn-primary" id="fetchButton">Fetch</button> 
+          <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button> 
+         </div> 
+        </form> 
+       </div> 
+      </div> 
+      <!-- Save state Modal --> 
+      <div id="dialogSaveState" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="saveStateLAbel" aria-hidden="true"> 
+       <div class="modal-header"> 
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> 
+        <h3 id="saveStateLAbel">Save</h3> 
+       </div> 
+       <div id="saveStateOut" class="modal-body"> 
+        <span id="saveStateMsg"></span>
+        <span id="saveStateWait"></span> 
+        <div id="saveStateErr"></div> 
+       </div> 
+      </div> 
+      <!--/span--> 
+      <div class="span7" id="domOutputContainer"> 
+       <h4>Parsed Output</h4> 
+       <textarea id="domOutput" rows="12" class="input-block-level" readonly=""></textarea> 
+      </div> 
+      <!--/span--> 
+     </div> 
+     <div class="row-fluid"> 
+      <div class="span12"> 
+       <h4>Select</h4> 
+       <form id="selectForm"> 
+        <div class="input-prepend"> 
+         <span class="add-on"><a href="//jsoup.org/apidocs/index.html?org/jsoup/select/Selector.html" target="_blank">CSS Query</a></span> 
+         <input type="text" name="selector" autocorrect="off" autocapitalize="off" class="input-xlarge" value="a" id="selectInput" /> 
+        </div> 
+       </form> 
+       <div id="selectOutput"></div> 
+      </div> 
+     </div> 
+    </div> 
+    <!--/span--> 
+   </div> 
+   <!--/row--> 
+   <hr /> 
+   <footer> 
+    <p><b>Try jsoup</b> &copy; <a href="//jhy.io/" rel="author">Jonathan Hedley</a> 2013 — 2017.</p> 
+   </footer> 
+  </div> 
+  <!--/.fluid-container--> 
+  <script>
+    var Try = {};
+    Try.stateId = "";
+
+    window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+    ga('create', 'UA-89734-10', 'auto');
+    ga('send', 'pageview');
+</script> 
+  <script async="" src="https://www.google-analytics.com/analytics.js"></script> 
+  <script src="/rez/exec_4.js" defer=""></script>   
+ </body>
+</html>
